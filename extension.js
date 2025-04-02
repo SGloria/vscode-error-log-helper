@@ -1,7 +1,9 @@
 const vscode = require("vscode");
 const PluginController = require("./src/controllers/pluginController");
+const WebViewController = require("./src/controllers/webViewController");
 
 let pluginController;
+let webViewController;
 
 /**
  * @param {vscode.ExtensionContext} context

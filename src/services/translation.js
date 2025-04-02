@@ -30,13 +30,12 @@ class TranslationService {
 
       const response = await axios.post(this.apiUrl, requestBody, {
         headers: {
-          Authorization: `Bearer ${this.apiKey}`, // 确保正确设置 API Key
+          Authorization: `Bearer ${this.apiKey}`,
           "Content-Type": "application/json",
         },
-        timeout: 10000, // 设置超时时间为 10 秒
+        timeout: 10000,
       });
 
-      // 检查响应结构并提取内容
       if (
         response.data &&
         response.data.choices &&

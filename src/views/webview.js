@@ -1,44 +1,31 @@
 const vscode = require("vscode");
 
-class WebViewController {
-  constructor() {
-    this.panel = null;
-  }
-
-  openWebView() {
-    if (this.panel) {
-      this.panel.reveal(vscode.ViewColumn.One);
-    } else {
-      this.panel = vscode.window.createWebviewPanel("errorLogWebView", "Error Log Viewer", vscode.ViewColumn.One, {
-        enableScripts: true,
-      });
-    }
-  }
-
-  updateWebView(log, suggestions) {
-    if (!this.panel) {
-      this.openWebView();
-    }
-
-    const suggestionList = suggestions.map((s) => `<li>${s}</li>`).join("");
-    this.panel.webview.html = `
-            <html>
-                <body>
-                    <h2>Translated Error Log</h2>
-                    <pre>${log.translatedText || "Translation not available"}</pre>
-                    <h2>Fix Suggestions</h2>
-                    <ul>${suggestionList}</ul>
-                </body>
-            </html>
-        `;
-  }
-
-  closeWebView() {
-    if (this.panel) {
-      this.panel.dispose();
-      this.panel = null;
-    }
-  }
-}
-
-module.exports = WebViewController;
+module.exports = function generateWebViewContent(logText, translatedText, suggestions) {
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Error Log Viewer</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #333; }
+        pre { background: #f4f4f4; padding: 10px; border-radius: 5px; }
+        ul { list-style-type: disc; margin-left: 20px; }
+      </style>
+    </head>
+    <body>
+      <h1>Error Log Viewer</h1>
+      <h2>Original Log</h2>
+      <pre>${logText}</pre>
+      <h2>Translated Log</h2>
+      <pre>${translatedText}</pre>
+      <h2>Suggestions</h2>
+      <ul>
+        ${suggestions.map((suggestion) => `<li>${suggestion}</li>`).join("")}
+      </ul>
+    </body>
+    </html>
+  `;
+};

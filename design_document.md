@@ -18,6 +18,7 @@ class ErrorLog {
 class TranslationService {
     - apiKey: String
     + translate(log: ErrorLog): String
+    + setApiKey(apiKey: String): void
 }
 
 class FixRecommendationService {
@@ -51,6 +52,7 @@ class PluginController {
     - settings: UserSettings
     + onLogDetected(log: String): void
     + updateSettings(settings: UserSettings): void
+    + listenToOutput(): void
 }
 
 class WebViewController {
@@ -174,6 +176,31 @@ SettingsUI --> user: 设置更新完成
 @enduml
 ```
 
+### 用况 6: 自动监听 VS Code 输出并翻译错误日志
+
+```plantuml
+@startuml
+
+actor user
+
+participant PluginController
+participant TranslationService
+participant FixRecommendationService
+participant WebViewController
+participant ErrorLogWebView
+
+PluginController -> PluginController: 监听 VS Code 输出
+PluginController -> TranslationService: 调用 GPT-4 翻译错误日志
+TranslationService --> PluginController: 返回翻译结果
+PluginController -> FixRecommendationService: 获取修复建议
+FixRecommendationService --> PluginController: 返回修复建议
+PluginController -> WebViewController: 更新 WebView 界面
+WebViewController -> ErrorLogWebView: 显示翻译和修复建议
+ErrorLogWebView --> user: 展示翻译后的错误日志和修复方案
+
+@enduml
+```
+
 ## 项目介绍
 
 vscode-error-log-plugin 是一个用于处理和分析错误日志的 VS Code 插件。它提供了一个用户友好的 WebView 界面，允许用户查看错误日志、获取翻译和修复建议。
@@ -196,10 +223,11 @@ vscode-error-log-helper
 ## 功能
 
 - **错误日志解析**: 通过 `src/services/errorLog.js` 提供错误日志的解析功能。
-- **翻译服务**: 使用 `src/services/translation.js` 处理不同语言之间的转换。
+- **翻译服务**: 使用 `src/services/translation.js` 调用 GPT-4 接口处理不同语言之间的转换。
 - **修复建议**: 通过 `src/services/fixService.js` 分析错误并提供可能的解决方案。
 - **用户设置管理**: `src/services/settings.js` 允许用户获取和更新配置。
 - **WebView 界面**: `src/views/webview.js` 提供与 VS Code 的交互，`src/views/webview.html` 定义界面结构，`src/views/styles.css` 负责样式。
+- **自动监听 VS Code 输出**: `src/controllers/pluginController.js` 实现监听 VS Code 输出日志，自动翻译错误日志并提供修复建议。
 
 ## 使用说明
 
@@ -207,12 +235,14 @@ vscode-error-log-helper
 2. 在 VS Code 中打开插件目录。
 3. 按 `F5` 启动插件开发主机。
 4. 在新打开的窗口中使用插件。
+5. 插件会自动监听 VS Code 输出日志，翻译错误信息并提供修复建议。
 
 ## 开发
 
 - 使用 Node.js 和 npm 管理依赖。
 - 运行 `npm install` 安装依赖。
 - 运行 `npm run build` 构建项目。
+- 在 `src/config/config.js` 中设置 GPT-4 API Key。
 
 ## 贡献
 

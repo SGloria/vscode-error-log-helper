@@ -1,15 +1,44 @@
-class ErrorLogWebView {
+const vscode = require("vscode");
+
+class WebViewController {
   constructor() {
-    this.displayedLog = null;
+    this.panel = null;
   }
 
-  displayLog(log) {
-    console.log("Displaying Log:", log.translatedText || log.logText);
+  openWebView() {
+    if (this.panel) {
+      this.panel.reveal(vscode.ViewColumn.One);
+    } else {
+      this.panel = vscode.window.createWebviewPanel("errorLogWebView", "Error Log Viewer", vscode.ViewColumn.One, {
+        enableScripts: true,
+      });
+    }
   }
 
-  updateFixSuggestions(suggestions) {
-    console.log("Fix Suggestions:", suggestions);
+  updateWebView(log, suggestions) {
+    if (!this.panel) {
+      this.openWebView();
+    }
+
+    const suggestionList = suggestions.map((s) => `<li>${s}</li>`).join("");
+    this.panel.webview.html = `
+            <html>
+                <body>
+                    <h2>Translated Error Log</h2>
+                    <pre>${log.translatedText || "Translation not available"}</pre>
+                    <h2>Fix Suggestions</h2>
+                    <ul>${suggestionList}</ul>
+                </body>
+            </html>
+        `;
+  }
+
+  closeWebView() {
+    if (this.panel) {
+      this.panel.dispose();
+      this.panel = null;
+    }
   }
 }
 
-module.exports = ErrorLogWebView;
+module.exports = WebViewController;

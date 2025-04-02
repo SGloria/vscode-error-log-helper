@@ -1,13 +1,14 @@
 class FixRecommendationService {
   constructor() {
-    this.recommendationDB = new Map([
-      ["TypeError", ["Check variable types", "Ensure proper type casting"]],
-      ["SyntaxError", ["Check syntax", "Use a linter"]],
-    ]);
+    this.recommendationDB = {
+      SyntaxError: ["Check for missing or extra brackets.", "Ensure proper syntax."],
+      ReferenceError: ["Check if variables are defined.", "Ensure proper scope usage."],
+      UnknownError: ["Consult documentation.", "Search for similar issues online."],
+    };
   }
 
   getFixSuggestion(errorType) {
-    return this.recommendationDB.get(errorType) || ["No suggestions available"];
+    return this.recommendationDB[errorType] || ["No suggestions available."];
   }
 }
 

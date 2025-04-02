@@ -185,21 +185,28 @@ actor user
 
 participant PluginController
 participant TranslationService
-participant FixRecommendationService
 participant WebViewController
 participant ErrorLogWebView
 
 PluginController -> PluginController: 监听 VS Code 输出
-PluginController -> TranslationService: 调用 GPT-4 翻译错误日志
-TranslationService --> PluginController: 返回翻译结果
-PluginController -> FixRecommendationService: 获取修复建议
-FixRecommendationService --> PluginController: 返回修复建议
+PluginController -> TranslationService: 调用聊天接口翻译错误日志并生成修复建议
+TranslationService --> PluginController: 返回翻译和建议
 PluginController -> WebViewController: 更新 WebView 界面
 WebViewController -> ErrorLogWebView: 显示翻译和修复建议
 ErrorLogWebView --> user: 展示翻译后的错误日志和修复方案
 
 @enduml
 ```
+
+## 功能更新
+
+### 错误日志翻译与修复建议
+
+通过调用聊天接口，插件能够：
+
+1. 翻译错误日志。
+2. 提供修复建议。
+3. 提供相关文档链接。
 
 ## 项目介绍
 

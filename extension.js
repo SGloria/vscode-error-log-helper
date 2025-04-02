@@ -16,6 +16,12 @@ function activate(context) {
   console.log("Activating vscode-error-log-helper extension...");
 
   try {
+    // 检查 API Key 是否配置
+    const apiKey = vscode.workspace.getConfiguration("vscode-error-log-helper").get("apiKey");
+    if (!apiKey) {
+      throw new Error("API Key is not configured. Please set it in the extension settings.");
+    }
+
     // 初始化插件控制器
     pluginController = new PluginController();
     console.log("PluginController initialized.");
@@ -60,35 +66,49 @@ function activate(context) {
 function deactivate() {}
 
 async function translateLog(log, model = "gpt-4o") {
+  const apiKey = vscode.workspace.getConfiguration("vscode-error-log-helper").get("apiKey");
+  if (!apiKey) {
+    throw new Error("API Key is not configured. Please set it in the extension settings.");
+  }
+
   if (!["gpt-4o", "gpt-4o-mini"].includes(model)) {
     throw new Error("Only gpt-4o and gpt-4o-mini models are supported. Please contact the assistant for other models.");
   }
 
-  const apiKey = vscode.workspace.getConfiguration("vscode-error-log-helper").get("apiKey");
-  const apiUrl = "https://api.deerapi.com";
+  const apiUrl = "https://api.deerapi.com/v1/chat/completions";
 
   try {
-    const response = await axios.post(
-      `${apiUrl}/v1/translate`,
-      {
-        model,
-        log,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const requestBody = {
+      model,
+      messages: [{ role: "user", content: log }],
+      stream: false,
+    };
 
-    if (response.data && response.data.translation) {
-      return response.data.translation;
+    console.log("Sending request to API:", requestBody);
+
+    const response = await axios.post(apiUrl, requestBody, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("Received response from API:", response.data);
+
+    if (
+      response.data &&
+      response.data.choices &&
+      response.data.choices[0] &&
+      response.data.choices[0].message &&
+      response.data.choices[0].message.content
+    ) {
+      return response.data.choices[0].message.content;
     } else {
-      throw new Error("Invalid response from translation API.");
+      console.error("Invalid response structure:", response.data);
+      throw new Error("Invalid response structure from translation API.");
     }
   } catch (error) {
-    console.error("Error translating log:", error);
+    console.error("Error translating log:", error.response ? error.response.data : error.message);
     throw new Error("Failed to translate log. Please check your API key and network connection.");
   }
 }

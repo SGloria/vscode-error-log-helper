@@ -2,11 +2,11 @@ const vscode = require("vscode");
 const TranslationService = require("../services/translation");
 const FixRecommendationService = require("../services/fixService");
 const WebViewController = require("./webViewController");
+const config = require("../config/config");
 
 class PluginController {
-  constructor(settings) {
-    this.settings = settings;
-    this.translationService = new TranslationService(settings.apiKey);
+  constructor() {
+    this.translationService = new TranslationService(config.getApiKey());
     this.fixRecommendationService = new FixRecommendationService();
     this.webViewController = new WebViewController();
   }
@@ -17,7 +17,7 @@ class PluginController {
       const logText = event.document.getText();
       const errorLog = { logText };
 
-      if (this.settings.autoTranslate) {
+      if (config.getAutoTranslate()) {
         try {
           errorLog.translatedText = await this.translationService.translate(errorLog);
         } catch (error) {

@@ -1,28 +1,50 @@
 {
   "name": "vscode-error-log-helper",
-  "displayName": "vscode-error-log-helper",
-  "description": "A VS Code extension that helps embedded developers translate error logs and provide fix recommendations.",
-  "version": "0.0.1",
+  "displayName": "VSCode Error Log Helper",
+  "description": "A VSCode extension to help translate error logs.",
+  "version": "1.0.0",
   "engines": {
-    "vscode": "^1.98.0"
+    "vscode": "^1.70.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:vscode-error-log-helper.translateLog",
+    "onCommand:vscode-error-log-helper.helloWorld"
+  ],
   "main": "./extension.js",
   "contributes": {
     "commands": [
       {
+        "command": "vscode-error-log-helper.translateLog",
+        "title": "Translate Error Log"
+      },
+      {
         "command": "vscode-error-log-helper.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "Error Log Helper Settings",
+      "properties": {
+        "vscode-error-log-helper.apiKey": {
+          "type": "string",
+          "default": "sk-rej22VAoXN2rmLd458Y64ygVj1yfe6ZzxiNuhex9uDGt2fUu",
+          "description": "API Key for GPT-4 translation service."
+        },
+        "vscode-error-log-helper.autoTranslate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically translate error logs."
+        }
+      }
+    }
   },
   "scripts": {
     "lint": "eslint .",
-    "pretest": "npm run lint",
-    "test": "vscode-test"
+    "pretest": "npm run lint"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
@@ -33,6 +55,6 @@
     "eslint": "^9.23.0"
   },
   "dependencies": {
-    "axios": "^1.8.4"
+    "axios": "^1.4.0"
   }
 }

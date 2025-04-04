@@ -15,7 +15,7 @@
 ## 配置项
 
 - `vscode-error-log-helper.apiKey`: GPT-4 API Key。
-- `vscode-error-log-helper.autoTranslate`: 是否自动翻译日志。
+- `vscode-error-log-helper.autoTranslate`: 是否自动翻译日志，默认为 `true`。
 
 ## 示例
 

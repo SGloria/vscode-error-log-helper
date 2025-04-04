@@ -4,14 +4,15 @@
   "description": "A VSCode extension to help translate error logs.",
   "version": "1.0.0",
   "engines": {
-    "vscode": "^1.70.0"
+    "vscode": "^1.75.0"
   },
+  "publisher": "lyl",
+  "enabledApiProposals": ["terminalDataWriteEvent"],
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:vscode-error-log-helper.translateLog",
-    "onCommand:vscode-error-log-helper.helloWorld"
+    "*"
   ],
   "main": "./extension.js",
   "contributes": {
@@ -19,10 +20,6 @@
       {
         "command": "vscode-error-log-helper.translateLog",
         "title": "Translate Error Log"
-      },
-      {
-        "command": "vscode-error-log-helper.helloWorld",
-        "title": "Hello World"
       }
     ],
     "configuration": {

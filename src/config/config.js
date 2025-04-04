@@ -8,5 +8,8 @@ module.exports = {
     }
     return apiKey;
   },
-  getAutoTranslate: () => vscode.workspace.getConfiguration("vscode-error-log-helper").get("autoTranslate"),
+  getAutoTranslate: () => {
+    const autoTranslate = vscode.workspace.getConfiguration("vscode-error-log-helper").get("autoTranslate");
+    return autoTranslate !== undefined ? autoTranslate : true;
+  },
 };

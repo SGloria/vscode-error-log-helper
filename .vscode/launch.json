@@ -10,8 +10,11 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
-			]
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--enable-proposed-api",
+				"lyl.vscode-error-log-helper"
+			],
+		
 		}
 	]
 }

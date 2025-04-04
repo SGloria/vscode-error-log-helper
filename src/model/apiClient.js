@@ -1,11 +1,11 @@
+const vscode = require("vscode");
 const axios = require("axios");
 
-class TranslationService {
+class APIClient {
   constructor(apiKey, apiUrl = "https://api.deerapi.com/v1/chat/completions") {
     this.apiKey = apiKey;
     this.apiUrl = apiUrl;
   }
-
   setApiKey(apiKey) {
     this.apiKey = apiKey;
   }
@@ -13,18 +13,15 @@ class TranslationService {
   setApiUrl(apiUrl) {
     this.apiUrl = apiUrl;
   }
-
   async translateAndSuggest(log) {
     if (!this.apiKey) {
       throw new Error("API Key is not set.");
     }
 
-    const prompt = this.generatePrompt(log);
-
     try {
       const requestBody = {
         model: "gpt-4o",
-        messages: [{ role: "user", content: prompt }],
+        messages: [{ role: "user", content: log }],
         stream: false,
       };
 
@@ -56,14 +53,6 @@ class TranslationService {
       throw new Error("Failed to process the log. Please check your API key, network connection, and API URL.");
     }
   }
-
-  generatePrompt(log) {
-    return `
-      以下是一个错误日志：
-      "${log}"
-      请翻译成中文，并提供修复建议和相关链接。
-    `;
-  }
 }
 
-module.exports = TranslationService;
+module.exports = APIClient;
